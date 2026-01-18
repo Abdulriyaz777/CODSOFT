@@ -1,0 +1,37 @@
+# 1. Import libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 2. Load the dataset
+data = pd.read_csv("train.csv")
+
+# 3. Select useful columns
+data = data[["Survived", "Pclass", "Sex", "Age", "Fare"]]
+
+# 4. Handle missing values
+data["Age"].fillna(data["Age"].median(), inplace=True)
+
+# 5. Convert categorical data to numbers
+data["Sex"] = data["Sex"].map({"male": 0, "female": 1})
+
+# 6. Split features and target
+X = data.drop("Survived", axis=1)
+y = data["Survived"]
+
+# 7. Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 8. Create and train the model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 9. Make predictions
+y_pred = model.predict(X_test)
+
+# 10. Check accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Model Accuracy:", accuracy)
